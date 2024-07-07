@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 from PIL import Image
 import io
-import pyperclip
 
 
 def upscale_image(image, scale_percent=200):
@@ -31,18 +30,10 @@ def image_to_coloring_book(image, scale_percent=200):
     return inverted_image
 
 
-def copy_image_to_clipboard(image):
-    pil_image = Image.fromarray(image)
-    output = io.BytesIO()
-    pil_image.convert("RGB").save(output, format="BMP")
-    data = output.getvalue()[14:]  # The BMP header is not required
-    output.close()
-
-    pyperclip.copy(data)
-
-
 def main():
     st.title("Image to Coloring Book Converter")
+
+    st.markdown('[Support me on Buy Me a Coffee](https://buymeacoffee.com/catmanisko)', unsafe_allow_html=True)
 
     uploaded_file = st.file_uploader("Choose an image...", type=["png", "jpg", "jpeg", "bmp", "tiff"])
     scale_percent = st.slider("Scale Percent", min_value=1, max_value=600, value=200)
@@ -63,17 +54,13 @@ def main():
             st.header("Processed Image")
             st.image(processed_image, caption='Processed Image', use_column_width=True)
 
-        if st.button('Save Processed Image'):
-            result = Image.fromarray(processed_image)
-            buf = io.BytesIO()
-            result.save(buf, format="PNG")
-            byte_im = buf.getvalue()
-            st.download_button(label="Download Processed Image", data=byte_im, file_name="processed_image.png",
-                               mime="image/png")
+        result = Image.fromarray(processed_image)
+        buf = io.BytesIO()
+        result.save(buf, format="PNG")
+        byte_im = buf.getvalue()
 
-        if st.button('Copy Processed Image to Clipboard'):
-            copy_image_to_clipboard(processed_image)
-            st.success("Processed image copied to clipboard!")
+        st.download_button(label="Save Processed Image", data=byte_im, file_name="processed_image.png",
+                           mime="image/png")
 
 
 if __name__ == "__main__":
