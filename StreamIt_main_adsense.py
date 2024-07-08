@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import io
-import streamlit.components.v1 as components
+from streamlit.components.v1 import html
 
 def upscale_image(image, scale_percent=200):
     width = int(image.shape[1] * scale_percent / 100)
@@ -28,22 +28,24 @@ def image_to_coloring_book(image, scale_percent=200):
 
     return inverted_image
 
+def add_meta_tag():
+    meta_tag = """
+    <head>
+        <meta name="google-site-verification" content="ca-pub-3116192235848096" />
+    </head>
+    """
+    html(meta_tag, height=0)
+
 def adsense_script():
     adsense_code = """
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3116192235848096" crossorigin="anonymous"></script>
     """
-    components.html(adsense_code)
-
-def add_meta_tag():
-    meta_tag = """
-    <meta name="google-adsense-account" content="ca-pub-3116192235848096">
-    """
-    components.html(meta_tag, height=0)
+    html(adsense_code, height=0)
 
 def main():
     st.title("Image to Coloring Book Converter")
 
-    # Dodanie metatagu
+    # Dodanie metatagu do nagłówka
     add_meta_tag()
 
     # Osadzenie skryptu AdSense
